@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<fop>
+	<font-base>/usr/share/fonts/type1/gsfonts/</font-base>
+	<renderers>
+		<renderer mime="application/pdf">
+			<fonts>
+                <font embed-url="n019003l.pfb">
+					<font-triplet name="Sans" style="normal"
+						weight="normal" />
+				</font>
+                <font embed-url="n019004l.pfb">
+                    <font-triplet name="Sans" style="normal"
+                        weight="bold" />
+                </font>
+                <font embed-url="n019023l.pfb">
+                    <font-triplet name="Sans" style="italic"
+                        weight="normal" />
+                </font>
+                <font embed-url="n019024l.pfb">
+                    <font-triplet name="Sans" style="italic"
+                        weight="bold" />
+                </font>
+                <font embed-url="n022003l.pfb">
+                    <font-triplet name="Monospace" style="normal"
+                        weight="normal" />
+                </font>
+<!--                 <font embed-url="n022004l.pfb"> -->
+<!--                     <font-triplet name="Monospace" style="normal" -->
+<!--                         weight="bold" /> -->
+<!--                 </font> -->
+                <font embed-url="n022023l.pfb">
+                    <font-triplet name="Monospace" style="italic"
+                        weight="normal" />
+                </font>
+<!--                 <font embed-url="n022024l.pfb"> -->
+<!--                     <font-triplet name="Sans" style="italic" -->
+<!--                         weight="bold" /> -->
+<!--                 </font> -->
+			</fonts>
+		</renderer>
+	</renderers>
+</fop>

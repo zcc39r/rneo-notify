@@ -1,0 +1,12 @@
+<jboss-deployment-structure>
+	<deployment>
+		<dependencies>
+			<module name="org.modeshape" services="import" />
+		</dependencies>
+	</deployment>
+    <sub-deployment name="rneo-notify-ejb.jar">
+        <dependencies>
+            <module name="org.modeshape" services="import" />
+        </dependencies>
+    </sub-deployment>
+</jboss-deployment-structure>

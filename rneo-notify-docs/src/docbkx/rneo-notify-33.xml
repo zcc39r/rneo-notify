@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<set version="5.0" xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xml:lang="ru">
+	<info>
+		<title>Автоматизированная библиотечно-информационная система
+			&quot;Руслан-Нео&quot;</title>
+		<productname class="trade">Руслан-Нео</productname>
+	</info>
+	<set>
+		<info>
+			<title>Модуль <application>"Аудит"</application></title>
+            <productname class="trade">Руслан-Нео</productname>
+		</info>
+		<book>
+			<info>
+				<title>Руководство программиста</title>
+				<releaseinfo>
+					Версия
+<?eval ${project.version}?>
+				</releaseinfo>
+				<copyright>
+					<year>2017</year>
+					<holder>ООО &quot;Открытые библиотечные системы&quot;</holder>
+				</copyright>
+				<author>
+					<orgname>ООО &quot;Открытые библиотечные системы&quot;</orgname>
+				</author>
+				<author>
+					<personname>
+						<firstname>Рустам</firstname>
+						<surname>Усманов</surname>
+					</personname>
+				</author>
+			</info>
+
+			<preface xml:id="preface">
+				<title>Аннотация</title>
+				<para>
+					В данном документе приведены сведения о назначении и условиях применения модуля <application>"Аудит"</application>.
+					Описаны характеристики модуля, а также входные и выходные данные.
+				</para>
+			</preface>
+
+			<chapter xml:id="purpose">
+				<title>Назначение и условия применения программы</title>
+				<para>
+					Модуль <application>"Аудит"</application>
+					<glossterm linkend="ab-abis">АБИС</glossterm>
+					<application>"Руслан-Нео"</application> предназначен для сбора и сохранения сведений о различных событиях, происходящих в
+					<glossterm linkend="ab-abis">АБИС</glossterm>
+                    <application>"Руслан-Нео"</application>. Поддерживается обработка следующих типов событий:
+					<itemizedlist>
+						<listitem>
+							<para>События хранилища данных (репозитория контента
+                                <glossterm linkend="ab-jcr">JCR</glossterm>)
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>Создание узла (базы данных или записи)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Удаление узла (базы данных или записи)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Перемещение узла (базы данных или записи)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Создание свойства базы данных или записи</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Изменение свойства базы данных или записи</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Удаление свойства базы данных или записи</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Добавление списка управления доступом (<glossterm linkend="ab-acl">ACL</glossterm>)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Удаление списка управления доступом (<glossterm linkend="ab-acl">ACL</glossterm>)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Выдача пользователю полномочий для работы с базами данных или записями</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Отзыв у пользователя полномочий для работы с базами данных или записями</para>
+                                    </listitem>
+                                </itemizedlist>
+							</para>
+						</listitem>
+						<listitem>
+							<para>События web-интерфейса ресурсов
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>Создание сеанса</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Изменение идентификатора сеанса</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Завершение сеанса</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Вызов метода</para>
+                                    </listitem>
+                                </itemizedlist>
+							</para>
+						</listitem>
+					</itemizedlist>
+				</para>
+				<para>Хранение сведений о событиях осуществляется сервером
+				<link xlink:href="http://lucene.apache.org/solr/"><application>Solr</application></link>,
+				используемым сервером <application>"Руслан-Нео"</application>.
+				Поэтому поиск, извлечение и иную обработку этих сведений следует производить при помощи
+				<link xlink:href="https://lucene.apache.org/solr/guide/6_6/client-apis.html">соответствующих интерфейсов взаимодействия
+				с <application>Solr</application></link>.</para>
+				<para>Модуль <application>"Аудит"</application> может функционировать на любых
+					технических средствах под управлением сервера приложений
+					<link xlink:href="http://wildfly.org"><application>WildFly</application></link> версии 10.*.</para>
+				<para>
+					Необходимыми условиями для работы модуля <application>"Аудит"</application>
+					являются:
+					<itemizedlist>
+						<listitem>
+							<para>
+								наличие  в конфигурации сервера
+								<application>WildFly</application> следующих очередей сообщений:
+								<itemizedlist>
+                                    <listitem>
+                                        <para><literal>java:/jms/topic/ruslan/createUpdateRecord</literal> - очередь сообщений хранилища данных</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para><literal>java:/jms/topic/ruslan/wsOperations</literal> - очередь сообщений web-интерфейса ресурсов</para>
+                                    </listitem>
+                                </itemizedlist>
+							</para>
+						</listitem>
+                        <listitem>
+                            <para>
+                                наличие в конфигурации сервера
+                                <application>WildFly</application> следующих общих параметров базовых сервисов
+                                <glossterm linkend="ab-abis">АБИС</glossterm> <application>"Руслан-Нео"</application>:
+                                <itemizedlist>
+                                    <listitem>
+                                        <para><parameter>java:global/ruslan/config/{сигла библиотеки}/solrURL</parameter></para>
+                                    </listitem>
+                                    <listitem>
+                                        <para><parameter>java:global/ruslan/config/{сигла библиотеки}/license</parameter></para>
+                                    </listitem>
+                                </itemizedlist>
+                            </para>
+                        </listitem>
+                         <listitem>
+                            <para>наличие лицензионного файла с указанием на лицензирование модуля <application>"Аудит"</application>
+                            в месте, заданном при помощи вышеуказанного параметра <parameter>java:global/ruslan/config/{сигла библиотеки}/license</parameter>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                возможность взаимодействия с сервером <application>Solr</application>
+                                версии
+                                <link xlink:href="http://archive.apache.org/dist/lucene/solr/6.3.0/">6.3.0</link>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                наличие коллекции <literal>rneo-audit</literal> на сервере <application>Solr</application>
+                            </para>
+                        </listitem>
+					</itemizedlist>
+				</para>
+			</chapter>
+
+			<chapter xml:id="features">
+				<title>Характеристики программы</title>
+				<para>Модуль <application>"Аудит"</application> работает в автоматическом режиме.
+				Обработка событий заключается в чтении данных о событиях из вышеуказанных очередей сообщений,
+				преобразовании их в документы <application>Solr</application> и сохранении этих документов на
+				сервере <application>Solr</application>.</para>
+				<para>Правильность работы модуля можно контролировать
+				посредством генерации событий, указанных в <link linkend="purpose">Главе 1</link> и последующего
+				поиска сведений о них на сервере <application>Solr</application>. Указание на причины неправильной
+				работы следует искать в журналах <application>WildFly</application> и <application>Solr</application>. 
+				</para>
+			</chapter>
+
+			<chapter xml:id="invocation">
+				<title>Обращение к программе</title>
+				<para>Модуль <application>"Аудит"</application> запускается автоматически при развёртывании на
+				сервере приложений <application>WildFly</application>. Неявное обращение к модулю осуществляется автоматически
+				при появлении сведений о событиях в вышеуказанных очередях сообщений.</para>
+			</chapter>
+
+			<chapter xml:id="data">
+				<title>Входные и выходные данные</title>
+				<section xml:id="input-data">
+				    <title>Входные данные</title>
+				    <para>Входными данными являются сообщения о событиях, направляемые в соответствующие очереди сообщений.</para>
+				    <para>В таблице 4-1 приведены сведения об элементах сообщений хранилища данных.
+				        <table label="4-1" frame="all">
+                            <title>Элементы сообщения хранилища данных</title>
+                            <tgroup cols="3" align="left">
+                                <thead>
+                                    <row>
+                                        <entry align="center">Название</entry>
+                                        <entry align="center">Тип</entry>
+                                        <entry align="center">Назначение</entry>
+                                    </row>
+                                </thead>
+                                <tbody>
+                                    <row>
+                                        <entry><literal>orgId</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry>Идентификатор организации, в хранилище которой произошло событие</entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>subject</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Тип объекта, с которым произошло событие:
+                                            <itemizedlist>
+                                                <listitem><para><literal>collection</literal> - база данных</para></listitem>
+                                                <listitem><para><literal>record</literal> - запись</para></listitem>
+                                                <listitem><para><literal>ACL</literal> - список управления доступом</para></listitem>
+                                                <listitem><para><literal>privileges</literal> - полномочия пользователя</para></listitem>
+                                            </itemizedlist></para>
+                                        </entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>userId</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Идентификатор пользователя, осуществившего операцию, приведшую к генерации события</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>timestamp</literal></entry>
+                                        <entry><literal>java.lang.Long</literal></entry>
+                                        <entry><para>Время фиксации события</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>path</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Путь к объекту, с которым произошло событие</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>srcAbsPath</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Исходный путь к объекту, который был удалён или перемещён</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>type</literal></entry>
+                                        <entry><literal>java.lang.Integer</literal></entry>
+                                        <entry><para>Тип события:
+                                            <itemizedlist>
+                                                <listitem><para><literal>1</literal> - добавление узла</para></listitem>
+                                                <listitem><para><literal>2</literal> - удаление узла</para></listitem>
+                                                <listitem><para><literal>4</literal> - добавление свойства</para></listitem>
+                                                <listitem><para><literal>8</literal> - удаление свойства</para></listitem>
+                                                <listitem><para><literal>16</literal> - изменение свойства</para></listitem>
+                                                <listitem><para><literal>32</literal> - перемещение узла</para></listitem>
+                                            </itemizedlist>
+                                        </para></entry>
+                                    </row>
+                                </tbody>
+                            </tgroup>
+                        </table>
+                    </para>
+                    <para>В таблице 4-2 приведены сведения об элементах сообщений web-интерфейса ресурсов.
+                        <table label="4-2" frame="all">
+                            <title>Элементы сообщения web-интерфейса ресурсов</title>
+                            <tgroup cols="3" align="left">
+                                <thead>
+                                    <row>
+                                        <entry align="center">Название</entry>
+                                        <entry align="center">Тип</entry>
+                                        <entry align="center">Назначение</entry>
+                                    </row>
+                                </thead>
+                                <tbody>
+                                    <row>
+                                        <entry><literal>orgId</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry>Идентификатор организации, в хранилище которой произошло событие</entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>userId</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Идентификатор пользователя, осуществившего операцию, приведшую к генерации события</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>sessionId</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Идентификатор сеанса</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>remoteAddr</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Адрес web-клиента</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>method</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Идентификатор операции, приведшей к генерации события</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>NCIP</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Тип сообщения <glossterm linkend="ab-ncip">NCIP</glossterm>, если идентификатор операции имеет значение <literal>ncip</literal></para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>timestamp</literal></entry>
+                                        <entry><literal>java.lang.Long</literal></entry>
+                                        <entry><para>Время фиксации события</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>duration</literal></entry>
+                                        <entry><literal>java.lang.Long</literal></entry>
+                                        <entry><para>Продолжительность выполнения метода</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>parameter</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Набор параметров, использованных при вызове метода</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>result</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Результат выполнения метода</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>oldSessionId</literal></entry>
+                                        <entry><literal>java.lang.String</literal></entry>
+                                        <entry><para>Прежний идентификатор сеанса, если идентификатор операции имеет значение <literal>sessionIdChanged</literal></para></entry>
+                                    </row>
+                                </tbody>
+                            </tgroup>
+                        </table>
+                    </para>
+				</section>
+				
+                <section xml:id="output-data">
+                    <title>Выходные данные</title>
+                    <para>Выходными данными являются документы <application>Solr</application>.</para>
+                    <para>В таблице 4-3 приведены сведения о полях выходных документов <application>Solr</application>.
+                        <table label="4-3" frame="all">
+                            <title>Поля выходных документов <application>Solr</application></title>
+                            <tgroup cols="3" align="left">
+                                <thead>
+                                    <row>
+                                        <entry align="center">Название</entry>
+                                        <entry align="center">Назначение</entry>
+                                    </row>
+                                </thead>
+                                <tbody>
+                                    <row>
+                                        <entry><literal>id</literal></entry>
+                                        <entry>Идентификатор события</entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.timestamp_dt</literal></entry>
+                                        <entry>Время фиксации события</entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.subject_s</literal></entry>
+                                        <entry><para>Тип объекта, с которым произошло событие:
+                                            <itemizedlist>
+                                                <listitem><para><literal>collection</literal> - база данных</para></listitem>
+                                                <listitem><para><literal>record</literal> - запись</para></listitem>
+                                                <listitem><para><literal>ACL</literal> - список управления доступом</para></listitem>
+                                                <listitem><para><literal>privileges</literal> - полномочия пользователя</para></listitem>
+                                                <listitem><para><literal>WS</literal> - web-интерфейс ресурсов</para></listitem>
+                                            </itemizedlist></para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.actor_s</literal></entry>
+                                        <entry><para>Идентификатор пользователя, осуществившего операцию, приведшую к генерации события</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.org_s</literal></entry>
+                                        <entry><para>Идентификатор организации, в хранилище которой произошло событие</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.action_s</literal></entry>
+                                        <entry><para>Тип события:
+                                            <itemizedlist>
+                                                <listitem><para><literal>UNKNOWN</literal> - неизвестное</para></listitem>
+                                                <listitem><para><literal>ADDED</literal> - добавление</para></listitem>
+                                                <listitem><para><literal>CHANGED</literal> - изменение</para></listitem>
+                                                <listitem><para><literal>REMOVED</literal> - удаление</para></listitem>
+                                                <listitem><para><literal>MOVED</literal> - перемещение</para></listitem>
+                                                <listitem><para><literal>sessionCreate</literal> - создание сеанса (тип объекта имеет значение <literal>WS</literal>)</para></listitem>
+                                                <listitem><para><literal>sessionDestroy</literal> - завершение сеанса (тип объекта имеет значение <literal>WS</literal>)</para></listitem>
+                                                <listitem><para><literal>sessionIdChanged</literal> - изменение идентификатора сеанса (тип объекта имеет значение <literal>WS</literal>)</para></listitem>
+                                                <listitem><para><literal>{метод}</literal> - Идентификатор операции, приведшей к генерации события (тип объекта имеет значение <literal>WS</literal>)</para></listitem>
+                                            </itemizedlist>
+                                        </para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.location_s</literal></entry>
+                                        <entry><para>Путь к объекту, с которым произошло событие.</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.src_s</literal></entry>
+                                        <entry><para>Исходный путь к объекту, который был перемещён.</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.remoteAddr_s</literal></entry>
+                                        <entry><para>Адрес web-клиента (тип объекта имеет значение <literal>WS</literal>).</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.duration_l</literal></entry>
+                                        <entry><para>Продолжительность выполнения операции (тип объекта имеет значение <literal>WS</literal>)</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.parameter_ss</literal></entry>
+                                        <entry><para>Набор параметров операции (тип объекта имеет значение <literal>WS</literal>)</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.result_s</literal></entry>
+                                        <entry><para>Результат выполнения операции (тип объекта имеет значение <literal>WS</literal>)</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.NCIP_s</literal></entry>
+                                        <entry><para>Тип сообщения <glossterm linkend="ab-ncip">NCIP</glossterm> (идентификатор операции имеет значение <literal>ncip</literal>, а тип объекта имеет значение <literal>WS</literal>)</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.session_s</literal></entry>
+                                        <entry><para>Идентификатор сеанса (тип объекта имеет значение <literal>WS</literal>)</para></entry>
+                                    </row>
+                                    <row>
+                                        <entry><literal>ra.oldSessionId_s</literal></entry>
+                                        <entry><para>Прежний идентификатор сеанса (идентификатор операции имеет значение <literal>sessionIdChanged</literal>, а тип объекта имеет значение <literal>WS</literal>)</para></entry>
+                                    </row>
+                                </tbody>
+                            </tgroup>
+                        </table>
+                    </para>
+                </section>
+			</chapter>
+
+			<chapter xml:id="messages">
+				<title>Сообщения</title>
+				<para>Диагностические сообщения выводятся в журнал <application>WildFly</application>.</para>
+			</chapter>
+
+			<glossary xml:id="abbreviations">
+				<title>Перечень сокращений</title>
+                <glossentry xml:id="ab-acl">
+                    <glossterm>ACL</glossterm>
+                    <glossdef>
+                        <para>Access Control List</para>
+                    </glossdef>
+                </glossentry>
+				<glossentry xml:id="ab-jcr">
+					<glossterm>JCR</glossterm>
+					<glossdef>
+						<para>Java Content Repository</para>
+					</glossdef>
+				</glossentry>
+				<glossentry xml:id="ab-ncip">
+					<glossterm>NCIP</glossterm>
+					<glossdef>
+						<para>
+							<link xlink:href="http://www.ncip.info">NISO Circulation
+								Interchange Protocol
+							</link>
+						</para>
+					</glossdef>
+				</glossentry>
+				<glossentry xml:id="ab-niso">
+					<glossterm>NISO</glossterm>
+					<glossdef>
+						<para>National Information Standards Organization</para>
+					</glossdef>
+				</glossentry>
+				<glossentry xml:id="ab-abis">
+					<glossterm>АБИС</glossterm>
+					<glossdef>
+						<para>Автоматизированная библиотечно-информационная система</para>
+					</glossdef>
+				</glossentry>
+			</glossary>
+
+		</book>
+	</set>
+</set>

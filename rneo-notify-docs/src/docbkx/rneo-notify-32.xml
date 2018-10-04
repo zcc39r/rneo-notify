@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<set version="5.0" xmlns="http://docbook.org/ns/docbook"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xml:lang="ru">
+	<info>
+		<title>Автоматизированная библиотечно-информационная система
+			&quot;Руслан-Нео&quot;</title>
+		<productname class="trade">Руслан-Нео</productname>
+	</info>
+	<set>
+		<info>
+			<title>Модуль <application>"Аудит"</application></title>
+			<productname class="trade">Руслан-Нео</productname>
+		</info>
+		<book>
+			<info>
+				<title>Руководство системного программиста</title>
+				<releaseinfo>
+					Версия
+<?eval ${project.version}?>
+				</releaseinfo>
+				<copyright>
+					<year>2017</year>
+					<holder>ООО &quot;Открытые библиотечные системы&quot;</holder>
+				</copyright>
+				<author>
+					<orgname>ООО &quot;Открытые библиотечные системы&quot;</orgname>
+				</author>
+				<author>
+					<personname>
+						<firstname>Рустам</firstname>
+						<surname>Усманов</surname>
+					</personname>
+				</author>
+			</info>
+
+			<preface xml:id="preface">
+				<title>Аннотация</title>
+				<para>
+					В данном документе приведены общие сведения о модуле <application>"Аудит"</application>
+					<glossterm linkend="ab-abis">AБИС</glossterm> <application>"Руслан-Нео"</application>.
+					Описаны порядок настройки и проверки, дополнительные возможности.
+				</para>
+			</preface>
+
+			<chapter xml:id="general">
+				<title>Общие сведения о программе</title>
+				<para>
+                    Модуль <application>"Аудит"</application>
+                    <glossterm linkend="ab-abis">АБИС</glossterm>
+                    <application>"Руслан-Нео"</application> предназначен для сбора и сохранения сведений о различных событиях, происходящих в
+                    <glossterm linkend="ab-abis">АБИС</glossterm>
+                    <application>"Руслан-Нео"</application>. Поддерживается обработка следующих типов событий:
+                    <itemizedlist>
+                        <listitem>
+                            <para>События хранилища данных (репозитория контента
+                                <glossterm linkend="ab-jcr">JCR</glossterm>)
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>Создание узла (базы данных или записи)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Удаление узла (базы данных или записи)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Перемещение узла (базы данных или записи)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Создание свойства базы данных или записи</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Изменение свойства базы данных или записи</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Удаление свойства базы данных или записи</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Добавление списка управления доступом (<glossterm linkend="ab-acl">ACL</glossterm>)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Удаление списка управления доступом (<glossterm linkend="ab-acl">ACL</glossterm>)</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Выдача пользователю полномочий для работы с базами данных или записями</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Отзыв у пользователя полномочий для работы с базами данных или записями</para>
+                                    </listitem>
+                                </itemizedlist>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>События web-интерфейса ресурсов
+                                <itemizedlist>
+                                    <listitem>
+                                        <para>Создание сеанса</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Изменение идентификатора сеанса</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Завершение сеанса</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para>Вызов метода</para>
+                                    </listitem>
+                                </itemizedlist>
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+                <para>Хранение сведений о событиях осуществляется сервером
+                <link xlink:href="http://lucene.apache.org/solr/"><application>Solr</application></link>,
+                используемым сервером <application>"Руслан-Нео"</application>.</para>
+                <para>Модуль <application>"Аудит"</application> может функционировать на любых
+                    технических средствах под управлением сервера приложений
+                    <link xlink:href="http://wildfly.org"><application>WildFly</application></link> версии 10.*.</para>
+                <para>
+                    Необходимыми условиями для работы модуля <application>"Аудит"</application>
+                    являются:
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                наличие  в конфигурации сервера
+                                <application>WildFly</application> следующих очередей сообщений:
+                                <itemizedlist>
+                                    <listitem>
+                                        <para><literal>java:/jms/topic/ruslan/createUpdateRecord</literal> - очередь сообщений хранилища данных</para>
+                                    </listitem>
+                                    <listitem>
+                                        <para><literal>java:/jms/topic/ruslan/wsOperations</literal> - очередь сообщений web-интерфейса ресурсов</para>
+                                    </listitem>
+                                </itemizedlist>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                наличие в конфигурации сервера
+                                <application>WildFly</application> следующих общих параметров базовых сервисов
+                                <glossterm linkend="ab-abis">АБИС</glossterm> <application>"Руслан-Нео"</application>:
+                                <itemizedlist>
+                                    <listitem>
+                                        <para><parameter>java:global/ruslan/config/{сигла библиотеки}/solrURL</parameter></para>
+                                    </listitem>
+                                    <listitem>
+                                        <para><parameter>java:global/ruslan/config/{сигла библиотеки}/license</parameter></para>
+                                    </listitem>
+                                </itemizedlist>
+                            </para>
+                        </listitem>
+                         <listitem>
+                            <para>наличие лицензионного файла с указанием на лицензирование модуля <application>"Аудит"</application>
+                            в месте, заданном при помощи вышеуказанного параметра <parameter>java:global/ruslan/config/{сигла библиотеки}/license</parameter>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                возможность взаимодействия с сервером <application>Solr</application>
+                                версии
+                                <link xlink:href="http://archive.apache.org/dist/lucene/solr/6.3.0/">6.3.0</link>
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                наличие коллекции <literal>rneo-audit</literal> на сервере <application>Solr</application>
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+			</chapter>
+
+			<chapter xml:id="structure">
+				<title>Структура программы</title>
+				<para>Модуль <application>"Аудит"</application>
+					состоит из следующих компонентов:
+					<orderedlist numeration="arabic">
+						<listitem>
+							<para>
+								<filename>rneo-audit*.ear</filename>
+								- модуль <application>"Аудит"</application>.
+							</para>
+						</listitem>
+					</orderedlist>
+				</para>
+			</chapter>
+
+			<chapter xml:id="installation-configuration">
+				<title>Настройка программы</title>
+				<section xml:id="installation">
+					<title>Установка программы</title>
+					<para>
+						Установка программы заключается в
+						<link
+							xlink:href="https://docs.jboss.org/author/display/WFLY10/Application+deployment">развёртывании
+							<filename>rneo-audit*.ear</filename> на сервере приложений WildFly.
+						</link>
+					</para>
+				</section>
+				<section xml:id="configuration">
+					<title>Настройка программы</title>
+					<para>Настройка модуля <application>"Аудит"</application> не требуется</para>
+				</section>
+			</chapter>
+
+			<chapter>
+				<title>Проверка программы</title>
+				<para>
+					Проверка развёртывания модуля <application>"Аудит"</application> осуществляется при помощи
+					средств управления <application>WildFly</application>.
+					При неуспешном развёртывании указание на причины следует искать в журнале <application>WildFly</application>.
+				</para>
+			</chapter>
+
+			<chapter>
+				<title>Дополнительные возможности</title>
+				<para>Модуль <application>"Аудит"</application> не обладает иными возможностями, помимо указанных в <link linkend="general">Главе 1</link>.</para>
+			</chapter>
+
+			<chapter>
+				<title>Сообщения системному программисту</title>
+				<para>Сообщения системному программисту выводятся в журнал <application>WildFly</application>.</para>
+			</chapter>
+
+
+			<glossary xml:id="abbreviations">
+				<title>Перечень сокращений</title>
+                <glossentry xml:id="ab-acl">
+                    <glossterm>ACL</glossterm>
+                    <glossdef>
+                        <para>Access Control List</para>
+                    </glossdef>
+                </glossentry>
+				<glossentry xml:id="ab-jcr">
+					<glossterm>JCR</glossterm>
+					<glossdef>
+						<para>Java Content Repository</para>
+					</glossdef>
+				</glossentry>
+				<glossentry xml:id="ab-abis">
+					<glossterm>АБИС</glossterm>
+					<glossdef>
+						<para>Автоматизированная библиотечно-информационная система</para>
+					</glossdef>
+				</glossentry>
+			</glossary>
+
+		</book>
+	</set>
+</set>
